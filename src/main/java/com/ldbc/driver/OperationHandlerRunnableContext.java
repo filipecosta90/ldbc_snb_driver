@@ -142,22 +142,15 @@ public class OperationHandlerRunnableContext implements Runnable, Poolable
             operationHandler.executeOperation( operation, dbConnectionState, resultReporter );
             long endOfLatencyMeasurementAsNano = timeSource.nanoSnapshot();
             resultReporter.setRunDurationAsNano( endOfLatencyMeasurementAsNano - startOfLatencyMeasurementAsNano );
-            if ( null == resultReporter().result() )
-            {
-                errorReporter.reportError( this, format( "Operation result is null\nOperation: %s", operation ) );
-            }
-            else
-            {
-                completionTimeWriter.submitCompletedTime( operation.timeStamp() );
-                metricsServiceWriter.submitOperationResult(
-                        operation.type(),
-                        operation.scheduledStartTimeAsMilli(),
-                        resultReporter.actualStartTimeAsMilli(),
-                        resultReporter.runDurationAsNano(),
-                        resultReporter.resultCode(),
-                        operation.timeStamp()
-                );
-            }
+            completionTimeWriter.submitCompletedTime( operation.timeStamp() );
+            metricsServiceWriter.submitOperationResult(
+                    operation.type(),
+                    operation.scheduledStartTimeAsMilli(),
+                    resultReporter.actualStartTimeAsMilli(),
+                    resultReporter.runDurationAsNano(),
+                    resultReporter.resultCode(),
+                    operation.timeStamp()
+            );
         }
         catch ( Throwable e )
         {

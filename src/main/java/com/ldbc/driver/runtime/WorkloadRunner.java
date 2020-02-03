@@ -3,6 +3,7 @@ package com.ldbc.driver.runtime;
 import com.ldbc.driver.Db;
 import com.ldbc.driver.WorkloadException;
 import com.ldbc.driver.WorkloadStreams;
+import com.ldbc.driver.control.LoggingService;
 import com.ldbc.driver.control.LoggingServiceFactory;
 import com.ldbc.driver.runtime.coordination.CompletionTimeException;
 import com.ldbc.driver.runtime.coordination.CompletionTimeService;
@@ -278,6 +279,7 @@ public class WorkloadRunner
         private final List<OperationStreamExecutorService> blockingStreamExecutorServices = new ArrayList<>();
         private final long statusDisplayIntervalAsMilli;
         private final AtomicReference<WorkloadRunnerThreadState> stateRef;
+        private final LoggingServiceFactory loggingServiceFactory;
 
         private enum ShutdownType
         {
@@ -299,6 +301,7 @@ public class WorkloadRunner
                 int operationHandlerExecutorsBoundedQueueSize ) throws WorkloadException, MetricsCollectionException
         {
             this.errorReporter = errorReporter;
+            this.loggingServiceFactory = loggingServiceFactory;
             this.statusDisplayIntervalAsMilli = statusDisplayIntervalAsSeconds;
 
             this.spinner = new Spinner( timeSource, spinnerSleepDurationAsMilli, ignoreScheduleStartTimes );
@@ -346,7 +349,8 @@ public class WorkloadRunner
                     executorForAsynchronous,
                     completionTimeWriterForAsynchronous
             );
-
+            LoggingService logS = loggingServiceFactory.loggingServiceFor( getClass().getSimpleName() );
+            logS.info("SIZE of workloadStreams.blockingStreamDefinitions() " + workloadStreams.blockingStreamDefinitions().size());
             for ( WorkloadStreamDefinition blockingStream : workloadStreams.blockingStreamDefinitions() )
             {
                 // only create a completion time writer for an executor if it contains at least one READ_WRITE operation
@@ -401,6 +405,8 @@ public class WorkloadRunner
 
             AtomicBoolean[] executorFinishedFlags = new AtomicBoolean[blockingStreamExecutorServices.size() + 1];
             executorFinishedFlags[0] = asynchronousStreamExecutorService.execute();
+            LoggingService logS = loggingServiceFactory.loggingServiceFor( getClass().getSimpleName() );
+            logS.info("SIZE of workloadStreams.blockingStreamDefinitions() " + blockingStreamExecutorServices.size());
             for ( int i = 0; i < blockingStreamExecutorServices.size(); i++ )
             {
                 executorFinishedFlags[i + 1] = blockingStreamExecutorServices.get( i ).execute();

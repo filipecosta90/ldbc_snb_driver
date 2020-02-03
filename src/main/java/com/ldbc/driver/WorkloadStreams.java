@@ -355,6 +355,7 @@ public class WorkloadStreams
         Operation operation;
         ChildOperationGenerator childOperationGenerator;
         // last operation retrieved (which has not yet been counted) from each stream
+        loggingService.info("Streams size " + streams.size());
         Operation[] streamHeads = new Operation[streams.size()];
         for ( int i = 0; i < streams.size(); i++ )
         {
@@ -461,7 +462,6 @@ public class WorkloadStreams
             kForStreamRun[i] = 0;
         }
         long kSoFarRun = 0;
-
         while ( kSoFarRun < limit )
         {
             long minAsMilli = Long.MAX_VALUE;

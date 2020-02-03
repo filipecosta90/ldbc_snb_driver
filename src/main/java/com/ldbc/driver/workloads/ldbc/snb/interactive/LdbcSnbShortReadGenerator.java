@@ -657,14 +657,18 @@ public class LdbcSnbShortReadGenerator implements ChildOperationGenerator
             }
             case LdbcShortQuery5MessageCreator.TYPE:
             {
-                LdbcShortQuery5MessageCreatorResult typedResult = (LdbcShortQuery5MessageCreatorResult) result;
-                personIdBuffer.add( typedResult.personId() );
+                if (result instanceof LdbcShortQuery5MessageCreatorResult) {
+                    LdbcShortQuery5MessageCreatorResult typedResult = (LdbcShortQuery5MessageCreatorResult) result;
+                    personIdBuffer.add( typedResult.personId() );
+                }
                 break;
             }
             case LdbcShortQuery6MessageForum.TYPE:
             {
-                LdbcShortQuery6MessageForumResult typedResult = (LdbcShortQuery6MessageForumResult) result;
-                personIdBuffer.add( typedResult.moderatorId() );
+                if (result instanceof LdbcShortQuery6MessageForumResult) {
+                    LdbcShortQuery6MessageForumResult typedResult = (LdbcShortQuery6MessageForumResult) result;
+                    personIdBuffer.add( typedResult.moderatorId() );
+                }
                 break;
             }
             case LdbcShortQuery7MessageReplies.TYPE:
@@ -1411,7 +1415,7 @@ public class LdbcSnbShortReadGenerator implements ChildOperationGenerator
             @Override
             public int size()
             {
-                throw new UnsupportedOperationException( "Method not implemented" );
+                return 0;
             }
 
             @Override
