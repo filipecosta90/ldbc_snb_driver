@@ -118,6 +118,11 @@ public class ResultsDirectory
         return getResultsLogFile( resultsDir, configuration, warmup );
     }
 
+    public File getResultsDir()
+    {
+        return resultsDir;
+    }
+
     public long getResultsLogFileLength( boolean warmup ) throws ClientException
     {
         try ( SimpleCsvFileReader csvResultsLogReader = new SimpleCsvFileReader(

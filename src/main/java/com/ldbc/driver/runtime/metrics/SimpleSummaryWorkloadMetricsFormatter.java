@@ -3,6 +3,9 @@ package com.ldbc.driver.runtime.metrics;
 import com.google.common.collect.Lists;
 import com.ldbc.driver.temporal.TemporalUtil;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
@@ -53,6 +56,12 @@ public class SimpleSummaryWorkloadMetricsFormatter implements WorkloadMetricsFor
         }
         sb.append( "------------------------------------------------------------------------------\n" );
         return sb.toString();
+    }
+
+    // TODO FILIPE
+    @Override
+    public void exportLatenciesByPercentile(WorkloadResultsSnapshot workloadResults, File resultsDir) throws IOException {
+
     }
 
     private String formatOneMetricRuntime( String offset, OperationMetricsSnapshot metric, int namePadRightDistance,

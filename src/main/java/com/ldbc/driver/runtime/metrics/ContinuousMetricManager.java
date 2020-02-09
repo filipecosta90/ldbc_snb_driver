@@ -1,7 +1,10 @@
 package com.ldbc.driver.runtime.metrics;
 
 import org.HdrHistogram.Histogram;
+import org.HdrHistogram.HistogramLogWriter;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.concurrent.TimeUnit;
 
 /*
@@ -49,7 +52,12 @@ public class ContinuousMetricManager
                 percentile95(),
                 percentile99(),
                 percentile99_9(),
-                stdDev() );
+                stdDev(),
+                histogram() );
+    }
+
+    private Histogram histogram() {
+        return histogram;
     }
 
     private long count()

@@ -1,6 +1,7 @@
 package com.ldbc.driver.runtime.metrics;
 
 import com.ldbc.driver.WorkloadException;
+import org.HdrHistogram.Histogram;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -90,7 +91,7 @@ public class WorkloadResultsSnapshotTest
                 runTimePercentile95,
                 runTimePercentile99,
                 runTimePercentile99_9,
-                runTimeStdDev );
+                runTimeStdDev, null);
 
         Map<String,OperationMetricsSnapshot> metrics = new HashMap<>();
         metrics.put( Integer.toString( seed++ ),

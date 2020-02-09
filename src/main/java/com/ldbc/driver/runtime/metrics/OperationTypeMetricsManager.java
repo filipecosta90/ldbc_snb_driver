@@ -97,6 +97,10 @@ public class OperationTypeMetricsManager
         return name;
     }
 
+    public ContinuousMetricManager getRunTimeMetric() {
+        return runTimeMetric;
+    }
+
     public long count()
     {
         return runTimeMetric.snapshot().count();

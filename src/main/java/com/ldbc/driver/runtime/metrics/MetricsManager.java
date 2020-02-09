@@ -5,6 +5,7 @@ import com.ldbc.driver.Operation;
 import com.ldbc.driver.control.LoggingServiceFactory;
 import com.ldbc.driver.temporal.TimeSource;
 
+import java.io.File;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.HashMap;
@@ -137,6 +138,18 @@ public class MetricsManager
     }
 
     final static long ONE_MS_AS_NS = TimeUnit.MILLISECONDS.toNanos( 1 );
+
+    public static void exportLatenciesByPercentile(WorkloadResultsSnapshot workloadResults, WorkloadMetricsFormatter metricsFormatter, File resultsDir) throws MetricsCollectionException {
+        try
+        {
+            metricsFormatter.exportLatenciesByPercentile( workloadResults, resultsDir );
+        }
+        catch ( Exception e )
+        {
+            throw new MetricsCollectionException( "Error encountered saving latencies by percentile distribuition ", e );
+        }
+
+    }
 
     public void measure( long actualStartTimeAsMilli, long runDurationAsNano, int operationType )
             throws MetricsCollectionException

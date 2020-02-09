@@ -1,7 +1,11 @@
 package com.ldbc.driver.runtime.metrics;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.HdrHistogram.Histogram;
+import org.HdrHistogram.HistogramLogProcessor;
+import org.HdrHistogram.HistogramLogWriter;
 
+import java.io.*;
 import java.util.concurrent.TimeUnit;
 
 public class OperationMetricsSnapshot {
@@ -76,5 +80,26 @@ public class OperationMetricsSnapshot {
                 ", count=" + count +
                 ", rutTimeMetric=" + rutTimeMetric +
                 '}';
+    }
+
+    public void saveHdrFormat(File resultsDir, String filename, long startTimeMs, long finishTimeMs) throws IOException {
+        Histogram histogram = rutTimeMetric.histogram;
+        histogram.setStartTimeStamp(startTimeMs);
+        histogram.setEndTimeStamp(finishTimeMs);
+        // save in v2 hlog format
+        FileOutputStream writerStream = new FileOutputStream(resultsDir.getAbsolutePath()+"/"+filename+".hlog");
+        HistogramLogWriter histogramLogWriter = new HistogramLogWriter(writerStream);
+        histogramLogWriter.outputLogFormatVersion();
+        histogramLogWriter.outputComment("[Logged with ldbc_snb_driver for query "+ name +"]");
+        histogramLogWriter.outputStartTime(startTimeMs);
+        histogramLogWriter.outputLogFormatVersion();
+        histogramLogWriter.outputLegend();
+        histogramLogWriter.outputIntervalHistogram(histogram);
+        writerStream.close();
+
+        // save in  percentile output format
+        FileOutputStream writerStreamText = new FileOutputStream(resultsDir.getAbsolutePath()+"/"+filename+".txt");
+        histogram.outputPercentileDistribution(new PrintStream(writerStreamText), 1000.0);
+        writerStreamText.close();
     }
 }

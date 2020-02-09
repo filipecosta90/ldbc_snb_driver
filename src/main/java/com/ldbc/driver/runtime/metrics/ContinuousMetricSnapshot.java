@@ -1,12 +1,14 @@
 package com.ldbc.driver.runtime.metrics;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.HdrHistogram.Histogram;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class ContinuousMetricSnapshot
 {
+    public Histogram histogram;
     @JsonProperty( value = "name" )
     private String name;
     @JsonProperty( value = "unit" )
@@ -36,9 +38,7 @@ public class ContinuousMetricSnapshot
     @JsonProperty( value = "std_dev" )
     private double stdDev;
 
-    private ContinuousMetricSnapshot()
-    {
-    }
+
 
     ContinuousMetricSnapshot( String name,
             TimeUnit unit,
@@ -53,7 +53,7 @@ public class ContinuousMetricSnapshot
             long percentile95,
             long percentile99,
             long percentile99_9,
-            double stdDev )
+            double stdDev, Histogram histogram )
     {
         this.name = name;
         this.unit = unit;
@@ -69,6 +69,7 @@ public class ContinuousMetricSnapshot
         this.percentile99 = percentile99;
         this.percentile99_9 = percentile99_9;
         this.stdDev = stdDev;
+        this.histogram = histogram;
     }
 
     public String name()
@@ -140,6 +141,8 @@ public class ContinuousMetricSnapshot
     {
         return stdDev;
     }
+
+    public Histogram histogram(){ return histogram; }
 
     @Override
     public boolean equals( Object o )

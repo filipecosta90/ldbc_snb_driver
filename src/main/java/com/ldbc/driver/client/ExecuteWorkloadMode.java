@@ -18,16 +18,7 @@ import com.ldbc.driver.runtime.coordination.CompletionTimeException;
 import com.ldbc.driver.runtime.coordination.CompletionTimeService;
 import com.ldbc.driver.runtime.coordination.CompletionTimeServiceAssistant;
 import com.ldbc.driver.runtime.coordination.CompletionTimeWriter;
-import com.ldbc.driver.runtime.metrics.DisruptorSbeMetricsService;
-import com.ldbc.driver.runtime.metrics.JsonWorkloadMetricsFormatter;
-import com.ldbc.driver.runtime.metrics.MetricsCollectionException;
-import com.ldbc.driver.runtime.metrics.MetricsManager;
-import com.ldbc.driver.runtime.metrics.MetricsService;
-import com.ldbc.driver.runtime.metrics.NullResultsLogWriter;
-import com.ldbc.driver.runtime.metrics.ResultsLogWriter;
-import com.ldbc.driver.runtime.metrics.SimpleResultsLogWriter;
-import com.ldbc.driver.runtime.metrics.WorkloadResultsSnapshot;
-import com.ldbc.driver.runtime.metrics.WorkloadStatusSnapshot;
+import com.ldbc.driver.runtime.metrics.*;
 import com.ldbc.driver.temporal.TemporalUtil;
 import com.ldbc.driver.temporal.TimeSource;
 import com.ldbc.driver.util.ClassLoaderHelper;
@@ -432,6 +423,17 @@ public class ExecuteWorkloadMode implements ClientMode<Object>
                         configurationFile.toPath(),
                         controlService.configuration().toPropertiesString().getBytes( StandardCharsets.UTF_8 )
                 );
+                if (!warmup){
+                    File resultsDir = resultsDirectory.getResultsDir();
+                    loggingService.info(
+                            format( "Exporting latencies by percentile distribution to directory %s...", resultsDir.getAbsolutePath() )
+                    );
+                    MetricsManager.exportLatenciesByPercentile(
+                            workloadResults,
+                            new SimpleDetailedWorkloadMetricsFormatter(),
+                            resultsDir
+                    );
+                }
                 resultsLogWriter.close();
                 if ( !controlService.configuration().ignoreScheduledStartTimes() )
                 {
